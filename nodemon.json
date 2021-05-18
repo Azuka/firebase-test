@@ -2,5 +2,9 @@
   "exec": "ts-node src/app.ts",
   "watch": ["src"],
   "ignore": ["src/build"],
-  "ext": "ts"
+  "ext": "ts",
+  "env": {
+    "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8400",
+    "GCLOUD_PROJECT": "firebase-test"
+  }
 }

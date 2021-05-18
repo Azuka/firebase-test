@@ -1,0 +1,16 @@
+version: '3.2'
+services:
+  firestore_emulator:
+    image: mtlynch/firestore-emulator
+    ports:
+      - 8400:8400
+    environment:
+      - FIRESTORE_PROJECT_ID=firebase-test
+      - PORT=8400
+#  app:
+#    image: your-app-image
+#    environment:
+#      - FIRESTORE_EMULATOR_HOST=firestore_emulator:8200
+#      - FIRESTORE_PROJECT_ID=dummy-project-id
+#  depends_on:
+#    - firestore_emulator

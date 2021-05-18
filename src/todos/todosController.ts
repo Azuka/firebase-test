@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Path,
   Post,
   Query,
@@ -10,15 +11,21 @@ import {
 } from 'tsoa';
 import { Todo } from './todo';
 import { TodosService, TodoCreationParams } from './todoService';
+import { injectable } from 'tsyringe';
 
+@injectable()
 @Route('todos')
 export class TodosController extends Controller {
+  constructor(private todosService?: TodosService) {
+    super();
+  }
+
   @Get('{todoId}')
   public async getTodo(
     @Path() todoId: string,
     @Query() name?: string
   ): Promise<Todo> {
-    return new TodosService().get(todoId, name);
+    return await this.todosService.get(todoId, name);
   }
 
   @SuccessResponse('201', 'Created') // Custom success response
@@ -27,7 +34,7 @@ export class TodosController extends Controller {
     @Body() requestBody: TodoCreationParams
   ): Promise<void> {
     this.setStatus(201); // set return status 201
-    new TodosService().create(requestBody);
+    this.todosService.create(requestBody);
     return;
   }
 }

@@ -1,5 +1,7 @@
+import 'reflect-metadata';
+
 // eslint-disable-next-line
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 // require('./tracer')('firebase-test');
 
@@ -24,6 +26,7 @@ import { ErrorReporting } from '@google-cloud/error-reporting';
 import { HelloRoutes } from './hello/hello.routes.config';
 import { RegisterRoutes } from './build/routes';
 import swaggerUi from 'swagger-ui-express';
+import * as admin from 'firebase-admin';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -83,7 +86,7 @@ app.get(
   })
 );
 app.get('/docs/swagger.json', async (_req: Request, res: Response) => {
-    return res.send(await import('./build/swagger.json'));
+  return res.send(await import('./build/swagger.json'));
 });
 app.use('/docs', swaggerUi.serve, async (_req: Request, res: Response) => {
   return res.send(swaggerUi.generateHTML(await import('./build/swagger.json')));
@@ -103,6 +106,14 @@ if (production) {
   app.use(errors.express);
 }
 // No routes below this
+
+// Initialize Firebase admin before start
+admin.initializeApp({
+  projectId: 'firebase-test', // TODO: replace with env GCLOUD_PROJECT
+  databaseURL: 'https://some-project.firebase.io', // https://github.com/firebase/firebase-tools/issues/2852#issuecomment-761606008
+});
+
+// console.log(process.env.FIRESTORE_EMULATOR_HOST);
 
 server.listen(port, () => {
   routes.forEach((route: CommonRoutesConfig) => {
